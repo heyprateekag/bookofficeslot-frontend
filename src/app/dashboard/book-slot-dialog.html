@@ -1,0 +1,55 @@
+<div class="container">
+  <h1 mat-dialog-title>Book Slot for {{data.selectedDate}}</h1>
+  <p class="slot-available">Slots available: {{data.availability}}</p>
+  <div
+    mat-dialog-content
+    *ngIf="data.availability > 0 && data.status == 'toBook'"
+  >
+    <p>Reason for visiting office</p>
+    <textarea [(ngModel)]="data.remark"></textarea>
+  </div>
+  <div
+    mat-dialog-content
+    *ngIf="data.availability == 0 && data.status == 'toBook'"
+  >
+    <p>
+      Sorry! there are no slots available to book. All the slots are already
+      booked. Please try later or take next day booking if available.
+    </p>
+  </div>
+  <div mat-dialog-content *ngIf="data.status == 'booked'">
+    <p>
+      You have already booked your slot for selected date. You can still cancel
+      your booking to release that slot for someone else.
+    </p>
+  </div>
+  <div
+    mat-dialog-actions
+    class="actions"
+    *ngIf="data.availability > 0 && data.status == 'toBook'"
+  >
+    <button mat-button (click)="onNoClick()" class="btn plain">
+      No Thanks
+    </button>
+    <!-- <button mat-button [mat-dialog-close]="data.availability" cdkFocusInitial>Ok</button> -->
+    <button mat-button class="btn primary" [mat-dialog-close]="data.remark">
+      Book
+    </button>
+  </div>
+  <div
+    mat-dialog-actions
+    class="actions"
+    *ngIf="data.availability == 0 && data.status == 'toBook'"
+  >
+    <button mat-button (click)="onNoClick()" class="btn plain">Ok</button>
+  </div>
+  <div mat-dialog-actions class="actions" *ngIf="data.status == 'booked'">
+    <button mat-button (click)="onNoClick()" class="btn plain">
+      No Thanks
+    </button>
+    <!-- <button mat-button [mat-dialog-close]="data.availability" cdkFocusInitial>Ok</button> -->
+    <button mat-button (click)="cancelSlot()" class="btn primary">
+      Cancel Booking
+    </button>
+  </div>
+</div>

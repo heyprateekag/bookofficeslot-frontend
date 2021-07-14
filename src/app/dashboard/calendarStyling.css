@@ -1,0 +1,108 @@
+/* body {
+  background-color: #333;
+  color: #aaa;
+  font-family: "Josefin Sans";
+} */
+
+.calendar {
+  /* width: 350px; */
+  width: 80%;
+  /*margin: 0px auto 0;*/
+  margin-left: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.calendar__month {
+  font-size: 20px;
+  font-weight: 800;
+  padding: 10px 0;
+  width: 100%;
+  position: relative;
+}
+
+.cal-month__previous,
+.cal-month__next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+
+  /* &:hover {
+    background-color: #42a5f5;
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.75);
+    border-radius: 50%;
+    font-weight: 800;
+    color: #111;
+  }  */
+}
+
+.cal-month__previous {
+  /* left: 20px; */
+}
+
+.cal-month__next {
+  right: 0;
+}
+
+.cal-month__current {
+  text-align: center;
+  color: #47597e;
+}
+
+.cal-head__day,
+.cal-body__day {
+  display: inline-block;
+  width: 14%;
+  height: 42px;
+  /* float: left; */
+}
+
+.cal-body__week,
+.calendar__head {
+  display: block;
+  height: 42px;
+  width: -webkit-fill-available;
+}
+
+.calendar__head {
+  line-height: 42px;
+  position: relative;
+  font-weight: bold;
+
+  /* &:after {
+    content: " ";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #90caf9;
+  } */
+}
+
+.cal-body__day {
+  color: rgb(189, 188, 188);
+  line-height: 42px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.cal-day__month--current {
+  color: #1b263d;
+}
+
+.cal-day__day--today {
+  font-weight: 800;
+  color: #b2ab8c;
+}
+
+.cal-day__day--selected {
+  background-color: #b2ab8c;
+  box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  color: #111;
+}

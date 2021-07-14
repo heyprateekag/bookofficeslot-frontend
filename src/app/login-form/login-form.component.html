@@ -1,0 +1,23 @@
+<div class="divStyle parent">
+  <form class="child">
+    <span class="heading">Signin</span>
+    <br />
+    <div class="horizontal-line"></div>
+    <br />
+    <input
+      type="text"
+      placeholder="Enter Email"
+      [(ngModel)]="enteredUsername"
+      name="email"
+    />
+    <br />
+    <input
+      type="password"
+      placeholder="Enter Password"
+      [(ngModel)]="enteredPassword"
+      name="pass"
+    />
+    <br />
+    <button type="submit" class="btn-primary" (click)="loginme()">Login</button>
+  </form>
+</div>

@@ -1,0 +1,309 @@
+<div class="container">
+  <div class="left-menu">
+    <img class="profile-pic" src="../../assets/avatar.jpg" />
+    <div class="name">{{ userDetails.name }}</div>
+    <div class="menu">
+      <ul>
+        <li class="selected-li-style">
+          <fa-icon [icon]="['fas', 'columns']" class="icon"></fa-icon>Dashboard
+        </li>
+        <li (click)="logout()">
+          <fa-icon [icon]="['fas', 'sign-out-alt']" class="icon"></fa-icon>Sign
+          Out
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="main-menu">
+    <div class="calendar-div">
+      <div class="calendar">
+        <div class="calendar__month">
+          <div class="cal-month__previous" (click)="prevMonth()"><</div>
+          <div class="cal-month__current"></div>
+          <div class="cal-month__next" (click)="nextMonth()">></div>
+        </div>
+        <div class="calendar__head">
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+          <div class="cal-head__day"></div>
+        </div>
+        <div class="calendar__body">
+          <div class="cal-body__week">
+            <div
+              id="div00"
+              class="cal-body__day"
+              (click)="dateClicked(0, 0)"
+            ></div>
+            <div
+              id="div01"
+              class="cal-body__day"
+              (click)="dateClicked(0, 1)"
+            ></div>
+            <div
+              id="div02"
+              class="cal-body__day"
+              (click)="dateClicked(0, 2)"
+            ></div>
+            <div
+              id="div03"
+              class="cal-body__day"
+              (click)="dateClicked(0, 3)"
+            ></div>
+            <div
+              id="div04"
+              class="cal-body__day"
+              (click)="dateClicked(0, 4)"
+            ></div>
+            <div
+              id="div05"
+              class="cal-body__day"
+              (click)="dateClicked(0, 5)"
+            ></div>
+            <div
+              id="div06"
+              class="cal-body__day"
+              (click)="dateClicked(0, 6)"
+            ></div>
+          </div>
+          <div class="cal-body__week">
+            <div
+              id="div10"
+              class="cal-body__day"
+              (click)="dateClicked(1, 0)"
+            ></div>
+            <div
+              id="div11"
+              class="cal-body__day"
+              (click)="dateClicked(1, 1)"
+            ></div>
+            <div
+              id="div12"
+              class="cal-body__day"
+              (click)="dateClicked(1, 2)"
+            ></div>
+            <div
+              id="div13"
+              class="cal-body__day"
+              (click)="dateClicked(1, 3)"
+            ></div>
+            <div
+              id="div14"
+              class="cal-body__day"
+              (click)="dateClicked(1, 4)"
+            ></div>
+            <div
+              id="div15"
+              class="cal-body__day"
+              (click)="dateClicked(1, 5)"
+            ></div>
+            <div
+              id="div16"
+              class="cal-body__day"
+              (click)="dateClicked(1, 6)"
+            ></div>
+          </div>
+          <div class="cal-body__week">
+            <div
+              id="div20"
+              class="cal-body__day"
+              (click)="dateClicked(2, 0)"
+            ></div>
+            <div
+              id="div21"
+              class="cal-body__day"
+              (click)="dateClicked(2, 1)"
+            ></div>
+            <div
+              id="div22"
+              class="cal-body__day"
+              (click)="dateClicked(2, 2)"
+            ></div>
+            <div
+              id="div23"
+              class="cal-body__day"
+              (click)="dateClicked(2, 3)"
+            ></div>
+            <div
+              id="div24"
+              class="cal-body__day"
+              (click)="dateClicked(2, 4)"
+            ></div>
+            <div
+              id="div25"
+              class="cal-body__day"
+              (click)="dateClicked(2, 5)"
+            ></div>
+            <div
+              id="div26"
+              class="cal-body__day"
+              (click)="dateClicked(2, 6)"
+            ></div>
+          </div>
+          <div class="cal-body__week">
+            <div
+              id="div30"
+              class="cal-body__day"
+              (click)="dateClicked(3, 0)"
+            ></div>
+            <div
+              id="div31"
+              class="cal-body__day"
+              (click)="dateClicked(3, 1)"
+            ></div>
+            <div
+              id="div32"
+              class="cal-body__day"
+              (click)="dateClicked(3, 2)"
+            ></div>
+            <div
+              id="div33"
+              class="cal-body__day"
+              (click)="dateClicked(3, 3)"
+            ></div>
+            <div
+              id="div34"
+              class="cal-body__day"
+              (click)="dateClicked(3, 4)"
+            ></div>
+            <div
+              id="div35"
+              class="cal-body__day"
+              (click)="dateClicked(3, 5)"
+            ></div>
+            <div
+              id="div36"
+              class="cal-body__day"
+              (click)="dateClicked(3, 6)"
+            ></div>
+          </div>
+          <div class="cal-body__week">
+            <div
+              id="div40"
+              class="cal-body__day"
+              (click)="dateClicked(4, 0)"
+            ></div>
+            <div
+              id="div41"
+              class="cal-body__day"
+              (click)="dateClicked(4, 1)"
+            ></div>
+            <div
+              id="div42"
+              class="cal-body__day"
+              (click)="dateClicked(4, 2)"
+            ></div>
+            <div
+              id="div43"
+              class="cal-body__day"
+              (click)="dateClicked(4, 3)"
+            ></div>
+            <div
+              id="div44"
+              class="cal-body__day"
+              (click)="dateClicked(4, 4)"
+            ></div>
+            <div
+              id="div45"
+              class="cal-body__day"
+              (click)="dateClicked(4, 5)"
+            ></div>
+            <div
+              id="div46"
+              class="cal-body__day"
+              (click)="dateClicked(4, 6)"
+            ></div>
+          </div>
+          <div class="cal-body__week">
+            <div
+              id="div50"
+              class="cal-body__day"
+              (click)="dateClicked(5, 0)"
+            ></div>
+            <div
+              id="div51"
+              class="cal-body__day"
+              (click)="dateClicked(5, 1)"
+            ></div>
+            <div
+              id="div52"
+              class="cal-body__day"
+              (click)="dateClicked(5, 2)"
+            ></div>
+            <div
+              id="div53"
+              class="cal-body__day"
+              (click)="dateClicked(5, 3)"
+            ></div>
+            <div
+              id="div54"
+              class="cal-body__day"
+              (click)="dateClicked(5, 4)"
+            ></div>
+            <div
+              id="div55"
+              class="cal-body__day"
+              (click)="dateClicked(5, 5)"
+            ></div>
+            <div
+              id="div56"
+              class="cal-body__day"
+              (click)="dateClicked(5, 6)"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <canvas
+        baseChart
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [options]="barChartOptions"
+        [plugins]="barChartPlugins"
+        [legend]="barChartLegend"
+        [chartType]="barChartType"
+        [height]="canvasHeight"
+        width="200px !important"
+        *ngIf="savedAvailableSlots"
+      >
+      </canvas>
+    </div>
+  </div>
+  <div class="right-menu">
+    <div class="heading">Updates</div>
+    <div class="updates">
+      <mat-carousel
+        timings="250ms ease-in"
+        [autoplay]="true"
+        interval="5000"
+        color="black"
+        maxWidth="auto"
+        proportion="40"
+        slides="5"
+        [loop]="true"
+        [hideArrows]="true"
+        [hideIndicators]="true"
+        [useKeyboard]="true"
+        [useMouseWheel]="false"
+        orientation="ltr"
+        overflow="unset"
+      >
+        <mat-carousel-slide
+          *ngFor="let slide of slides; let i = index"
+          [hideOverlay]="true"
+          style="overflow: unset"
+        >
+          <p>{{ slide.description }}</p>
+        </mat-carousel-slide>
+      </mat-carousel>
+    </div>
+    <div class="occupy">
+      <span class="bookings-heading">Bookings on {{ selectedDate }}</span>
+      <!-- <span *ngIf="remark">{{ remark }}</span> -->
+    </div>
+  </div>
+</div>

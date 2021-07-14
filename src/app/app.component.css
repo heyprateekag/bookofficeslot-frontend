@@ -1,0 +1,11 @@
+/* #293B5F #47597E #DBE6FD #B2AB8C */
+.btn-primary {
+  background-color: #b2ab8c;
+  padding: 15px 100px;
+  color: black;
+  font-size: larger;
+  font-weight: 700;
+  margin: 5% 0 0 0;
+  border: 0;
+  border-radius: 25px;
+}
