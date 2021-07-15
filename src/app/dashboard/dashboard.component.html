@@ -303,7 +303,14 @@
     </div>
     <div class="occupy">
       <span class="bookings-heading">Bookings on {{ selectedDate }}</span>
+      <br><br><br>
       <!-- <span *ngIf="remark">{{ remark }}</span> -->
+      <div class="list-div">
+      <ul>
+        <li *ngFor="let userOnDate of usersOnDate">{{ userOnDate.name }}</li>
+        <li *ngIf="!usersOnDate || usersOnDate.length == 0" style="list-style-type: none; margin-left: 0.5em;">None Booked</li>
+      </ul>
+    </div>
     </div>
   </div>
 </div>

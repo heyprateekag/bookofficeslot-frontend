@@ -32,4 +32,14 @@ export class AppService {
     const url = this.baseURL + 'availableslots/'+startDate+'/'+endDate;
     return this.http.get(url);
   }
+
+  getBookedUsersForDate(date){
+    const url = this.baseURL + 'bookedusers/'+date;
+    return this.http.get(url);
+  }
+
+  getBookedSlots(email){
+    const url = this.baseURL + 'bookedfor/'+email;
+    return this.http.get(url);
+  }
 }

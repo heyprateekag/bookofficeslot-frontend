@@ -38,9 +38,31 @@ Router.get("/availableslots/:startDate/:endDate", (req, res) => {
     if(!err){
       res.send(rows);
     }else{
-      console.log(err);
+      res.send(err);
     }
   });
+});
+
+//get all the users booked for a date
+Router.get("/bookedusers/:date", (req, res)=>{
+  mysqlConnection.query("SELECT * from bookmyslot.bookings WHERE bookingdate = ? AND status = ?", [req.params.date, "Confirmed"], (err, rows, fields)=>{
+    if(!err){
+      res.send(rows);
+    }else{
+      res.send(err);
+    }
+  })
+});
+
+//get all the booked slots for a user
+Router.get("/bookedfor/:email", (req, res)=>{
+  mysqlConnection.query("SELECT * from bookmyslot.bookings WHERE email = ? AND status = ?", [req.params.email, "Confirmed"], (err, rows, fields)=>{
+    if(!err){
+      res.send(rows);
+    }else{
+      res.send(err);
+    }
+  })
 });
 
 //delete a person by id
