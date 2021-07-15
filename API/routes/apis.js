@@ -34,35 +34,72 @@ Router.get("/:id", (req, res) => {
 
 //get all the available slots for a month
 Router.get("/availableslots/:startDate/:endDate", (req, res) => {
-  mysqlConnection.query("Select * from bookmyslot.slots_availability WHERE date BETWEEN ? AND ?", [req.params.startDate, req.params.endDate],(err,rows, fields)=>{
-    if(!err){
-      res.send(rows);
-    }else{
-      res.send(err);
+  mysqlConnection.query(
+    "Select * from bookmyslot.slots_availability WHERE date BETWEEN ? AND ?",
+    [req.params.startDate, req.params.endDate],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send(rows);
+      } else {
+        res.send(err);
+      }
     }
-  });
+  );
 });
 
 //get all the users booked for a date
-Router.get("/bookedusers/:date", (req, res)=>{
-  mysqlConnection.query("SELECT * from bookmyslot.bookings WHERE bookingdate = ? AND status = ?", [req.params.date, "Confirmed"], (err, rows, fields)=>{
-    if(!err){
-      res.send(rows);
-    }else{
-      res.send(err);
+Router.get("/bookedusers/:date", (req, res) => {
+  mysqlConnection.query(
+    "SELECT * from bookmyslot.bookings WHERE bookingdate = ? AND status = ?",
+    [req.params.date, "Confirmed"],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send(rows);
+      } else {
+        res.send(err);
+      }
     }
-  })
+  );
 });
 
 //get all the booked slots for a user
-Router.get("/bookedfor/:email", (req, res)=>{
-  mysqlConnection.query("SELECT * from bookmyslot.bookings WHERE email = ? AND status = ?", [req.params.email, "Confirmed"], (err, rows, fields)=>{
-    if(!err){
-      res.send(rows);
-    }else{
-      res.send(err);
+Router.get("/bookedfor/:email", (req, res) => {
+  mysqlConnection.query(
+    "SELECT * from bookmyslot.bookings WHERE email = ? AND status = ?",
+    [req.params.email, "Confirmed"],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send(rows);
+      } else {
+        res.send(err);
+      }
     }
-  })
+  );
+});
+
+//cancel slot
+Router.post("/cancelslot", (req, res) => {
+  mysqlConnection.query(
+    "UPDATE bookmyslot.bookings SET status = ? WHERE email = ? AND bookingdate = ?",
+    ["Cancelled", req.body.email, req.body.bookingdate],
+    (err, rows, fields) => {
+      if (!err) {
+        mysqlConnection.query(
+          "UPDATE bookmyslot.slots_availability SET available_slots = available_slots + 1 WHERE date = ?",
+          [req.body.bookingdate],
+          (err1, rows1, fields1) => {
+            if (!err1) {
+              res.send("Slot cancelled successfully!");
+            } else {
+              res.send(err1);
+            }
+          }
+        );
+      } else {
+        res.send(err);
+      }
+    }
+  );
 });
 
 //delete a person by id

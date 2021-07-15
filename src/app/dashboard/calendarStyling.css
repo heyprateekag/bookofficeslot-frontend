@@ -106,3 +106,8 @@
   border-radius: 10px;
   color: #111;
 }
+
+.dateBooked {
+  color: green;
+  font-weight: bold;
+}

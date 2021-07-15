@@ -18,7 +18,23 @@ export interface DialogData {
   status; //booked, toBook
   availability; //0-total number of slots
   remark;
+  cancelSlot;
 }
+var monthArr = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+var bookedSlots; //for storing the dates when logged in user has booked his slots
 const totalSlots = 50;
 
 @Component({
@@ -31,7 +47,6 @@ export class DashboardComponent implements OnInit {
   slides;
   cal;
   selectedDate;
-  monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   savedAvailableSlots;
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -106,13 +121,30 @@ export class DashboardComponent implements OnInit {
   public canvasHeight = '180px';
   public canvasWidth = '200px !important';
 
-  usersOnDateTemp = [{name: "John Doe"},{name: "Akhil"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}, {name: "Anand"}];
+  usersOnDateTemp = [
+    { name: 'John Doe' },
+    { name: 'Akhil' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+    { name: 'Anand' },
+  ];
   usersOnDate;
   remark;
   startDate;
+  cancelSlot; //true or false to get to know whether user has asked to cancel his/her slot or not
   endDate;
   openMonth;
-  bookedSlots;
   barChartData: ChartDataSets[];
 
   constructor(
@@ -122,114 +154,129 @@ export class DashboardComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
+
+    this.appService.getBookedSlots(this.userDetails.email).subscribe((data) => {
+      bookedSlots = data;
+      this.cal = new Calendar();
+      this.cal.init();
+      // console.log(JSON.stringify(this.bookedSlots));
+    });
     // console.log(JSON.stringify(this.userDetails));
-    this.cal = new Calendar();
-    this.cal.init();
     this.appService.getAllUpdates().subscribe((data) => {
       this.slides = data;
     });
-    this.selectedDate = new Date().toISOString().split("T")[0];
+    this.selectedDate = new Date().toISOString().split('T')[0];
     this.getBookedUsersForDate(this.selectedDate);
-    this.startDate = this.selectedDate.split("-")[0]+'-'+this.selectedDate.split("-")[1]+'-01';
-    this.endDate = this.selectedDate.split("-")[0]+'-'+this.selectedDate.split("-")[1]+'-31';
+    this.startDate =
+      this.selectedDate.split('-')[0] +
+      '-' +
+      this.selectedDate.split('-')[1] +
+      '-01';
+    this.endDate =
+      this.selectedDate.split('-')[0] +
+      '-' +
+      this.selectedDate.split('-')[1] +
+      '-31';
     this.availableSlots(this.startDate, this.endDate);
     this.openMonth = moment();
-    this.appService.getBookedSlots(this.userDetails.email).subscribe((data)=>{
-      this.bookedSlots = data;
-      // console.log(JSON.stringify(this.bookedSlots));
+  }
+
+  availableSlots(startDate, endDate) {
+    this.appService.getAvailableSlots(startDate, endDate).subscribe((data) => {
+      this.savedAvailableSlots = data;
+      // console.log(this.savedAvailableSlots);
+      this.updateGraph(this.openMonth);
+      this.getAvailableSlotForDay(this.selectedDate);
     });
   }
 
-availableSlots(startDate, endDate){
-  this.appService.getAvailableSlots(startDate, endDate).subscribe((data)=>{
-    this.savedAvailableSlots = data;
-    // console.log(this.savedAvailableSlots);
-    this.updateGraph(this.openMonth);
-    this.getAvailableSlotForDay(this.selectedDate);
-  })
-}
-
-getBookedUsersForDate(date){
-  this.appService.getBookedUsersForDate(date).subscribe((data)=>{
-    this.usersOnDate = data;
-    // console.log("users: "+JSON.stringify(this.usersOnDate));
-  });
-}
-
-prevMonth(){
-  this.cal.removeMonth();
-  let mon = (this.monthArr.indexOf(this.cal.monthString.split(" ")[0])+1).toString();
-  if(parseInt(mon)<10){
-    mon = "0"+mon;
+  getBookedUsersForDate(date) {
+    this.appService.getBookedUsersForDate(date).subscribe((data) => {
+      this.usersOnDate = data;
+      // console.log("users: "+JSON.stringify(this.usersOnDate));
+    });
   }
-  this.startDate = this.cal.monthString.split(" ")[1] + "-" + mon + "-01";
-  this.endDate = this.cal.monthString.split(" ")[1] + "-" + mon + "-31";
-  this.availableSlots(this.startDate, this.endDate);
-  this.openMonth.subtract(1, 'month');
-  // console.log(this.month.clone().endOf('month').date());
-  // this.updateGraph(this.openMonth);
-}
 
-nextMonth(){
-  this.cal.addMonth();
-  let mon = (this.monthArr.indexOf(this.cal.monthString.split(" ")[0])+1).toString();
-  if(parseInt(mon)<10){
-    mon = "0"+mon;
+  prevMonth() {
+    this.cal.removeMonth();
+    let mon = (
+      monthArr.indexOf(this.cal.monthString.split(' ')[0]) + 1
+    ).toString();
+    if (parseInt(mon) < 10) {
+      mon = '0' + mon;
+    }
+    this.startDate = this.cal.monthString.split(' ')[1] + '-' + mon + '-01';
+    this.endDate = this.cal.monthString.split(' ')[1] + '-' + mon + '-31';
+    this.availableSlots(this.startDate, this.endDate);
+    this.openMonth.subtract(1, 'month');
+    // console.log(this.month.clone().endOf('month').date());
+    // this.updateGraph(this.openMonth);
   }
-  this.startDate = this.cal.monthString.split(" ")[1] + "-" + mon + "-01";
-  this.endDate = this.cal.monthString.split(" ")[1] + "-" + mon + "-31";
-  this.availableSlots(this.startDate, this.endDate);
-  this.openMonth.add(1, 'month');
-}
 
-updateGraph(month){
-  let barChartLabelsTemp = [];
-  let tempData = [];
-  let i = 0;
-  for(i=0; i<month.clone().endOf('month').date(); i++){
-    barChartLabelsTemp.push(i+1);
-    // tempData.push(this.getAvailableSlotForDay(i+1));
-    let temp = this.getAvailableSlotForDay(i+1);
-    // console.log(typeof(temp))
-    tempData[i] = temp;
+  nextMonth() {
+    this.cal.addMonth();
+    let mon = (
+      monthArr.indexOf(this.cal.monthString.split(' ')[0]) + 1
+    ).toString();
+    if (parseInt(mon) < 10) {
+      mon = '0' + mon;
+    }
+    this.startDate = this.cal.monthString.split(' ')[1] + '-' + mon + '-01';
+    this.endDate = this.cal.monthString.split(' ')[1] + '-' + mon + '-31';
+    this.availableSlots(this.startDate, this.endDate);
+    this.openMonth.add(1, 'month');
   }
-  this.barChartData = [
-    {
-      data: tempData,
-      label: 'Available slots',
-      barThickness: 5,
-      backgroundColor: '#b2ab8c',
-      hoverBackgroundColor: '#293b5f',
-    },
-  ];
-  this.barChartLabels = barChartLabelsTemp;
-  // console.log(tempData);
-}
 
-getDate(day){
-  let mon = (this.monthArr.indexOf(this.cal.monthString.split(" ")[0]) + 1).toString();
-  if(parseInt(mon)<10){
-    mon = "0"+mon;
+  updateGraph(month) {
+    let barChartLabelsTemp = [];
+    let tempData = [];
+    let i = 0;
+    for (i = 0; i < month.clone().endOf('month').date(); i++) {
+      barChartLabelsTemp.push(i + 1);
+      // tempData.push(this.getAvailableSlotForDay(i+1));
+      let temp = this.getAvailableSlotForDay(i + 1);
+      // console.log(typeof(temp))
+      tempData[i] = temp;
+    }
+    this.barChartData = [
+      {
+        data: tempData,
+        label: 'Available slots',
+        barThickness: 5,
+        backgroundColor: '#b2ab8c',
+        hoverBackgroundColor: '#293b5f',
+      },
+    ];
+    this.barChartLabels = barChartLabelsTemp;
+    // console.log(tempData);
   }
-  if(parseInt(day)<10){
-    day = "0"+day;
-  }
-  let year = this.cal.monthString.split(" ")[1];
-  let date = year + "-" + mon + "-" + day;
-  return date;
-}
 
-getAvailableSlotForDay(day){
-  var date = this.getDate(day);
-  var reqObject = this.savedAvailableSlots.find(obj => {
-    return obj.date === date;
-  });
-  if(!reqObject){
-    return totalSlots;
-  }else{
-    return reqObject.available_slots;
+  getDate(day) {
+    let mon = (
+      monthArr.indexOf(this.cal.monthString.split(' ')[0]) + 1
+    ).toString();
+    if (parseInt(mon) < 10) {
+      mon = '0' + mon;
+    }
+    if (parseInt(day) < 10) {
+      day = '0' + day;
+    }
+    let year = this.cal.monthString.split(' ')[1];
+    let date = year + '-' + mon + '-' + day;
+    return date;
   }
-}
+
+  getAvailableSlotForDay(day) {
+    var date = this.getDate(day);
+    var reqObject = this.savedAvailableSlots.find((obj) => {
+      return obj.date === date;
+    });
+    if (!reqObject) {
+      return totalSlots;
+    } else {
+      return reqObject.available_slots;
+    }
+  }
 
   dateClicked(row, coloumn) {
     var idName = 'div' + row + coloumn;
@@ -237,12 +284,12 @@ getAvailableSlotForDay(day){
     this.selectedDate = this.getDate(selectedDay);
     this.getBookedUsersForDate(this.selectedDate);
     var statusTemp;
-    var objTemp = this.savedAvailableSlots.find(obj => {
+    var objTemp = this.savedAvailableSlots.find((obj) => {
       return obj.date === this.selectedDate;
     });
-    if(!objTemp){
+    if (!objTemp) {
       statusTemp = 'toBook';
-    }else{
+    } else {
       statusTemp = 'booked';
     }
     const dialogRef = this.dialog.open(BookDialog, {
@@ -252,13 +299,15 @@ getAvailableSlotForDay(day){
         status: statusTemp, //toBook or booked
         availability: this.getAvailableSlotForDay(selectedDay),
         remark: this.remark,
+        cancelSlot: false,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
       // console.log('The dialog was closed');
       // console.log(result);
       this.remark = result; //undefined if not booked
-      if (this.remark) {
+      if (this.remark && this.remark !== true) {
+        console.log('book');
         //book slot
         var jsonObject = {
           name: this.userDetails.name,
@@ -273,7 +322,22 @@ getAvailableSlotForDay(day){
             console.log('Slot booked: ' + data);
           },
           (err) => {
-            console.log('Some error occured! '+err);
+            console.log('Some error occured! ' + JSON.stringify(err));
+          }
+        );
+      }
+      this.cancelSlot = result;
+      if (this.cancelSlot === true) {
+        var jsonObjectTemp = {
+          email: this.userDetails.email,
+          bookingdate: this.selectedDate,
+        };
+        this.appService.cancelSlot(jsonObjectTemp).subscribe(
+          (data) => {
+            console.log('Slot cancelled successfully! ' + JSON.stringify(data));
+          },
+          (err) => {
+            console.log(JSON.stringify(err));
           }
         );
       }
@@ -429,6 +493,32 @@ class Calendar {
         this.bodyDivs[index].classList.add('cal-day__month--next');
       }
 
+      var traversedDay;
+      if (day < 10) {
+        traversedDay = '0' + day;
+      } else {
+        traversedDay = day;
+      }
+      let traversedMonth = (
+        monthArr.indexOf(this.monthString.split(' ')[0]) + 1
+      ).toString();
+      if (parseInt(traversedMonth) < 10) {
+        traversedMonth = '0' + traversedMonth;
+      }
+      var traversedDate =
+        this.monthString.split(' ')[1] +
+        '-' +
+        traversedMonth +
+        '-' +
+        traversedDay;
+      // console.log(traversedDate);
+      // console.log(JSON.stringify(bookedSlots));
+      var reqObject = bookedSlots.find((obj) => {
+        return obj.bookingdate === traversedDate;
+      });
+      if (reqObject) {
+        this.bodyDivs[index].classList.add('dateBooked');
+      }
       this.bodyDivs[index].innerText = day++;
     }
   }
@@ -442,6 +532,8 @@ class Calendar {
       this.bodyDivs[index].classList.remove('cal-day__month--current');
     this.bodyDivs[index].classList.contains('cal-day__day--today') &&
       this.bodyDivs[index].classList.remove('cal-day__day--today');
+    this.bodyDivs[index].classList.contains('dateBooked') &&
+      this.bodyDivs[index].classList.remove('dateBooked');
     if (selected) {
       this.bodyDivs[index].classList.contains('cal-day__day--selected') &&
         this.bodyDivs[index].classList.remove('cal-day__day--selected');
@@ -475,11 +567,6 @@ export class BookDialog implements OnInit {
 
   bookSlot() {
     console.log('book slot');
-    this.dialogRef.close();
-  }
-
-  cancelSlot() {
-    console.log('cancel slot');
     this.dialogRef.close();
   }
 }
