@@ -154,31 +154,41 @@ export class DashboardComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
-
-    this.appService.getBookedSlots(this.userDetails.email).subscribe((data) => {
-      bookedSlots = data;
-      this.cal = new Calendar();
-      this.cal.init();
-      // console.log(JSON.stringify(this.bookedSlots));
-    });
+    this.getBookedSlots('initial');
     // console.log(JSON.stringify(this.userDetails));
     this.appService.getAllUpdates().subscribe((data) => {
       this.slides = data;
     });
-    this.selectedDate = new Date().toISOString().split('T')[0];
-    this.getBookedUsersForDate(this.selectedDate);
-    this.startDate =
-      this.selectedDate.split('-')[0] +
-      '-' +
-      this.selectedDate.split('-')[1] +
-      '-01';
-    this.endDate =
-      this.selectedDate.split('-')[0] +
-      '-' +
-      this.selectedDate.split('-')[1] +
-      '-31';
-    this.availableSlots(this.startDate, this.endDate);
-    this.openMonth = moment();
+  }
+
+  getBookedSlots(status) {
+    this.appService.getBookedSlots(this.userDetails.email).subscribe((data) => {
+      bookedSlots = data;
+      console.log('bookedSlots: ' + JSON.stringify(bookedSlots));
+      if (status === 'initial') {
+        this.cal = new Calendar();
+        this.cal.init();
+      } else if (status === 'update') {
+        this.cal.draw();
+      }
+      this.selectedDate = this.getDate(new Date().toDateString().split(' ')[2]);
+      // console.log(new Date().toDateString());
+      // console.log('today: ' + this.selectedDate);
+      this.getBookedUsersForDate(this.selectedDate);
+      this.startDate =
+        this.selectedDate.split('-')[0] +
+        '-' +
+        this.selectedDate.split('-')[1] +
+        '-01';
+      this.endDate =
+        this.selectedDate.split('-')[0] +
+        '-' +
+        this.selectedDate.split('-')[1] +
+        '-31';
+      this.availableSlots(this.startDate, this.endDate);
+      this.openMonth = moment();
+      // console.log(JSON.stringify(this.bookedSlots));
+    });
   }
 
   availableSlots(startDate, endDate) {
@@ -323,6 +333,7 @@ export class DashboardComponent implements OnInit {
           },
           (err) => {
             console.log('Some error occured! ' + JSON.stringify(err));
+            this.getBookedSlots('update');
           }
         );
       }
@@ -338,6 +349,7 @@ export class DashboardComponent implements OnInit {
           },
           (err) => {
             console.log(JSON.stringify(err));
+            this.getBookedSlots('update');
           }
         );
       }
@@ -517,7 +529,11 @@ class Calendar {
         return obj.bookingdate === traversedDate;
       });
       if (reqObject) {
-        this.bodyDivs[index].classList.add('dateBooked');
+        if (
+          !this.bodyDivs[index].classList.contains('cal-day__month--next') &&
+          !this.bodyDivs[index].classList.contains('cal-day__month--previous')
+        )
+          this.bodyDivs[index].classList.add('dateBooked');
       }
       this.bodyDivs[index].innerText = day++;
     }
