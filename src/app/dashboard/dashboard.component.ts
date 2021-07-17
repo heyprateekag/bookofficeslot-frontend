@@ -290,70 +290,81 @@ export class DashboardComponent implements OnInit {
 
   dateClicked(row, coloumn) {
     var idName = 'div' + row + coloumn;
-    var selectedDay = document.getElementById(idName).innerHTML;
-    this.selectedDate = this.getDate(selectedDay);
-    this.getBookedUsersForDate(this.selectedDate);
-    var statusTemp;
-    var objTemp = this.savedAvailableSlots.find((obj) => {
-      return obj.date === this.selectedDate;
-    });
-    if (!objTemp) {
-      statusTemp = 'toBook';
-    } else {
-      statusTemp = 'booked';
-    }
-    const dialogRef = this.dialog.open(BookDialog, {
-      width: '50em',
-      data: {
-        selectedDate: this.selectedDate,
-        status: statusTemp, //toBook or booked
-        availability: this.getAvailableSlotForDay(selectedDay),
-        remark: this.remark,
-        cancelSlot: false,
-      },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      // console.log('The dialog was closed');
-      // console.log(result);
-      this.remark = result; //undefined if not booked
-      if (this.remark && this.remark !== true) {
-        console.log('book');
-        //book slot
-        var jsonObject = {
-          name: this.userDetails.name,
-          email: this.userDetails.email,
-          bookingdate: this.selectedDate,
+    if (
+      document
+        .getElementById(idName)
+        .classList.contains('cal-day__month--current')
+    ) {
+      var selectedDay = document.getElementById(idName).innerHTML;
+      this.selectedDate = this.getDate(selectedDay);
+      this.getBookedUsersForDate(this.selectedDate);
+      var statusTemp;
+      var objTemp = bookedSlots.find((obj) => {
+        return obj.bookingdate === this.selectedDate;
+      });
+      console.log('bookedSlots: ' + JSON.stringify(bookedSlots));
+      console.log('objTemp: ' + JSON.stringify(objTemp));
+      console.log('selectedDate: ' + this.selectedDate);
+      if (!objTemp) {
+        statusTemp = 'toBook';
+      } else {
+        statusTemp = 'booked';
+      }
+      const dialogRef = this.dialog.open(BookDialog, {
+        width: '50em',
+        data: {
+          selectedDate: this.selectedDate,
+          status: statusTemp, //toBook or booked
+          availability: this.getAvailableSlotForDay(selectedDay),
           remark: this.remark,
-          status: 'Confirmed',
-        };
-        console.log(JSON.stringify(jsonObject));
-        this.appService.bookSlot(jsonObject).subscribe(
-          (data) => {
-            console.log('Slot booked: ' + data);
-          },
-          (err) => {
-            console.log('Some error occured! ' + JSON.stringify(err));
-            this.getBookedSlots('update');
-          }
-        );
-      }
-      this.cancelSlot = result;
-      if (this.cancelSlot === true) {
-        var jsonObjectTemp = {
-          email: this.userDetails.email,
-          bookingdate: this.selectedDate,
-        };
-        this.appService.cancelSlot(jsonObjectTemp).subscribe(
-          (data) => {
-            console.log('Slot cancelled successfully! ' + JSON.stringify(data));
-          },
-          (err) => {
-            console.log(JSON.stringify(err));
-            this.getBookedSlots('update');
-          }
-        );
-      }
-    });
+          cancelSlot: false,
+        },
+      });
+      dialogRef.afterClosed().subscribe((result) => {
+        // console.log('The dialog was closed');
+        // console.log(result);
+        this.remark = result; //undefined if not booked
+        if (this.remark && this.remark !== true) {
+          console.log('book');
+          //book slot
+          var jsonObject = {
+            name: this.userDetails.name,
+            email: this.userDetails.email,
+            bookingdate: this.selectedDate,
+            remark: this.remark,
+            status: 'Confirmed',
+          };
+          console.log(JSON.stringify(jsonObject));
+          this.appService.bookSlot(jsonObject).subscribe(
+            (data) => {
+              console.log('Slot booked: ' + data);
+            },
+            (err) => {
+              console.log('Some error occured! ' + JSON.stringify(err));
+              this.getBookedSlots('update');
+            }
+          );
+        }
+        this.cancelSlot = result;
+        if (this.cancelSlot === true) {
+          var jsonObjectTemp = {
+            email: this.userDetails.email,
+            bookingdate: this.selectedDate,
+          };
+          this.appService.cancelSlot(jsonObjectTemp).subscribe(
+            (data) => {
+              console.log(
+                'Slot cancelled successfully! ' + JSON.stringify(data)
+              );
+            },
+            (err) => {
+              console.log(JSON.stringify(err));
+              this.getBookedSlots('update');
+            }
+          );
+        }
+      });
+    }
   }
 
   logout() {

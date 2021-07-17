@@ -21,10 +21,25 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCarouselModule } from '@ngmodule/material-carousel';
 import { ChartsModule } from 'ng2-charts';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MainDashboardComponent } from './dashboard/main-dashboard/main.dashboard.component';
+import { ManageBookingComponent } from './dashboard/manage-booking/manage.booking.component';
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    children: [
+      {
+        path: '',
+        component: MainDashboardComponent,
+      },
+      {
+        path: 'managebooking',
+        component: ManageBookingComponent, // another child route component that the router renders
+      },
+    ],
+  },
 ];
 
 @NgModule({
@@ -33,6 +48,8 @@ const appRoutes: Routes = [
     LoginComponent,
     LoginFormComponent,
     DashboardComponent,
+    MainDashboardComponent,
+    ManageBookingComponent,
     BookDialog,
   ],
   imports: [
