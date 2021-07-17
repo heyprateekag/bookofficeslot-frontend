@@ -13,3 +13,19 @@ mat-dialog-container {
   background: #dbe6fd !important;
   border-radius: 10px !important;
 }
+
+table.dataTable td {
+  border: 1px solid black !important;
+}
+table.dataTable tr {
+  border-right: 1px solid black !important;
+}
+table.dataTable td {
+  /* border-collapse: collapse !important; */
+}
+.dataTables_scrollHeadInner {
+  width: 100% !important;
+}
+.dataTables_scrollHeadInner table {
+  width: 100% !important;
+}

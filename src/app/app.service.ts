@@ -25,7 +25,7 @@ export class AppService {
 
   bookSlot(jsonObject): Observable<{}> {
     const url = this.baseURL + 'bookslot';
-    return this.http.put(url, jsonObject);
+    return this.http.put(url, jsonObject, { responseType: 'text' });
   }
 
   getAvailableSlots(startDate, endDate) {
@@ -45,6 +45,17 @@ export class AppService {
 
   cancelSlot(jsonObject) {
     const url = this.baseURL + 'cancelslot';
-    return this.http.post(url, jsonObject);
+    return this.http.post(url, jsonObject, { responseType: 'text' });
+  }
+
+  getBookings(todaysdate) {
+    const url = this.baseURL + 'bookings/' + todaysdate;
+    return this.http.get(url);
+  }
+
+  //just for admin
+  cancelBooking(id) {
+    const url = this.baseURL + 'cancelbooking/' + id;
+    return this.http.get(url, { responseType: 'text' });
   }
 }

@@ -11,7 +11,7 @@ Router.get("/updates", (req, res) => {
     if (!err) {
       res.send(rows);
     } else {
-      console.log(err);
+      res.send(err);
     }
   });
 });
@@ -26,7 +26,7 @@ Router.get("/:id", (req, res) => {
       if (!err) {
         res.send(rows);
       } else {
-        console.log(err);
+        res.send(err);
       }
     }
   );
@@ -77,6 +77,21 @@ Router.get("/bookedfor/:email", (req, res) => {
   );
 });
 
+//get all the present and future confirmed booking details
+Router.get("/bookings/:todaysdate", (req, res) => {
+  mysqlConnection.query(
+    "SELECT * from bookmyslot.bookings WHERE status = ? AND bookingdate >= ?",
+    ["Confirmed", req.params.todaysdate],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send(rows);
+      } else {
+        res.send(err);
+      }
+    }
+  );
+});
+
 //cancel slot
 Router.post("/cancelslot", (req, res) => {
   mysqlConnection.query(
@@ -112,7 +127,7 @@ Router.delete("/delete/:id", (req, res) => {
       if (!err) {
         res.send("Deleted Successfully!");
       } else {
-        console.log(err);
+        res.send(err);
       }
     }
   );
@@ -142,9 +157,23 @@ Router.put("/update/:id", (req, res) => {
     "UPDATE bookmyslot.bookings SET name=?, age=? WHERE (id = ?)",
     [req.body.name, req.body.age, req.params.id],
     (err, rows, fields) => {
-      // console.log(req.body);
       if (!err) {
         res.send("Record updated successfully!");
+      } else {
+        res.send(err);
+      }
+    }
+  );
+});
+
+//cancel booking by admin
+Router.get("/cancelbooking/:id", (req, res) => {
+  mysqlConnection.query(
+    "UPDATE bookmyslot.bookings SET status = ? WHERE id = ?",
+    ["Cancelled", req.params.id],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send("Slot cancelled successfully!");
       } else {
         res.send(err);
       }
@@ -239,7 +268,7 @@ Router.get("/login/:username/:password", (req, res) => {
           res.send(json);
         }
       } else {
-        console.log(err);
+        res.send(err);
       }
     }
   );
