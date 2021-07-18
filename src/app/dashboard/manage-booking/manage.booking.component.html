@@ -23,7 +23,10 @@
           <td>{{ booking.bookingdate }}</td>
           <td>{{ booking.remark }}</td>
           <td>
-            <button class="cancelbtn" (click)="cancelBooking(booking.id)">
+            <button
+              class="cancelbtn"
+              (click)="cancelBooking(booking.id, booking.bookingdate)"
+            >
               Cancel Booking
             </button>
           </td>

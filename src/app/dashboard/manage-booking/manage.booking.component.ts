@@ -1,7 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AppService } from 'src/app/app.service';
+import { BookDialog } from '../main-dashboard/main.dashboard.component';
+
+export interface DialogData {
+  selectedDate;
+  status; //booked, toBook
+  availability; //0-total number of slots
+  remark;
+  cancelSlot;
+}
 
 @Component({
   selector: 'app-login',
@@ -29,7 +39,11 @@ export class ManageBookingComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   todaysdate;
 
-  constructor(private router: Router, private appService: AppService) {}
+  constructor(
+    private router: Router,
+    private appService: AppService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     // console.log(new Date().toDateString());
@@ -65,16 +79,30 @@ export class ManageBookingComponent implements OnInit {
       ],
     };
   }
-  cancelBooking(id) {
-    this.appService.cancelBooking(id).subscribe(
-      (data) => {
-        console.log('Slot cancelled successfully!');
-        this.getBookings('update');
+  cancelBooking(id, date) {
+    const dialogRef = this.dialog.open(BookDialog, {
+      width: '50em',
+      data: {
+        reason: '',
+        cancelBooking: false,
+        status: 'cancelSlot',
       },
-      (err) => {
-        console.log(err);
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // console.log(result);
+      if (result) {
+        this.appService.cancelBooking(id, result, date).subscribe(
+          (data) => {
+            console.log('Slot cancelled successfully!');
+            this.getBookings('update');
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
       }
-    );
+    });
   }
 
   getBookings(status) {

@@ -1,12 +1,23 @@
 <div class="container">
-  <h1 mat-dialog-title>Book Slot for {{data.selectedDate}}</h1>
-  <p class="slot-available">Slots available: {{data.availability}}</p>
+  <h1 mat-dialog-title *ngIf="data.status !== 'cancelSlot'">
+    Book Slot for {{data.selectedDate}}
+  </h1>
+  <h1 mat-dialog-title *ngIf="data.status === 'cancelSlot'">
+    Are you sure you want to cancel booking?
+  </h1>
+  <p class="slot-available" *ngIf="data.status !== 'cancelSlot'">
+    Slots available: {{data.availability}}
+  </p>
   <div
     mat-dialog-content
     *ngIf="data.availability > 0 && data.status == 'toBook'"
   >
     <p>Reason for visiting office</p>
     <textarea [(ngModel)]="data.remark"></textarea>
+  </div>
+  <div mat-dialog-content *ngIf="data.status == 'cancelSlot'">
+    <p>Reason for cancelling</p>
+    <textarea [(ngModel)]="data.reason"></textarea>
   </div>
   <div
     mat-dialog-content
@@ -34,6 +45,15 @@
     <!-- <button mat-button [mat-dialog-close]="data.availability" cdkFocusInitial>Ok</button> -->
     <button mat-button class="btn primary" [mat-dialog-close]="data.remark">
       Book
+    </button>
+  </div>
+  <div mat-dialog-actions class="actions" *ngIf="data.status == 'cancelSlot'">
+    <button mat-button (click)="onNoClick()" class="btn plain">
+      No Thanks
+    </button>
+    <!-- <button mat-button [mat-dialog-close]="data.availability" cdkFocusInitial>Ok</button> -->
+    <button mat-button class="btn primary" [mat-dialog-close]="data.reason">
+      Yes Cancel
     </button>
   </div>
   <div

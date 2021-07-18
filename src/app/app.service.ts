@@ -54,8 +54,15 @@ export class AppService {
   }
 
   //just for admin
-  cancelBooking(id) {
-    const url = this.baseURL + 'cancelbooking/' + id;
+  cancelBooking(id, reason, date) {
+    const url =
+      this.baseURL +
+      'cancelbooking/' +
+      parseInt(id) +
+      '/' +
+      reason +
+      '/' +
+      date;
     return this.http.get(url, { responseType: 'text' });
   }
 }

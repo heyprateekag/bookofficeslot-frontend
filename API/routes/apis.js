@@ -167,14 +167,26 @@ Router.put("/update/:id", (req, res) => {
 });
 
 //cancel booking by admin
-Router.get("/cancelbooking/:id", (req, res) => {
+Router.get("/cancelbooking/:id/:reason/:date", (req, res) => {
   mysqlConnection.query(
-    "UPDATE bookmyslot.bookings SET status = ? WHERE id = ?",
-    ["Cancelled", req.params.id],
+    "UPDATE bookmyslot.bookings SET status = ?, reasonforcancel = ? WHERE id = ?",
+    ["Cancelled", req.params.reason, req.params.id],
     (err, rows, fields) => {
       if (!err) {
-        res.send("Slot cancelled successfully!");
+        mysqlConnection.query(
+          "UPDATE bookmyslot.slots_availability SET available_slots = available_slots + 1 WHERE date = ?",
+          [req.params.date],
+          (err1, rows, fields) => {
+            if (!err1) {
+              res.send("Slot cancelled successfully!");
+            } else {
+              console.log(err1);
+              res.send(err1);
+            }
+          }
+        );
       } else {
+        console.log(err);
         res.send(err);
       }
     }
