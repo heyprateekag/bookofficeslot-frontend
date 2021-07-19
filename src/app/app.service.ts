@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AppService {
-  baseURL = 'http://localhost:8080/';
+  baseURL = 'https://bookmyofficeslotbackend.herokuapp.com/';
   // userDetails;
 
   constructor(private http: HttpClient, private route: Router) {}
