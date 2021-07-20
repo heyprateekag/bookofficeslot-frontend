@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "heroku-postbuild": "ng build --prod"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +37,7 @@
     "datatables.net-buttons": "^1.7.1",
     "datatables.net-buttons-dt": "^1.7.1",
     "datatables.net-dt": "^1.10.25",
+    "express": "^4.17.1",
     "jquery": "^3.6.0",
     "jszip": "^3.6.0",
     "moment": "^2.29.1",
